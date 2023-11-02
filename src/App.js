@@ -1,9 +1,10 @@
 import React from 'react';
-import { AppBar, Box, Toolbar, Typography, Button, IconButton, Paper, Container, Grid, Card, CardMedia, CardContent, CardActions, BottomNavigation, BottomNavigationAction } from "@mui/material";
+import { AppBar, Box, Toolbar, Typography, Button, IconButton, Paper, Container, Grid, Card, CardMedia, CardContent, CardActions, BottomNavigation, BottomNavigationAction, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleFilledWhite';
 import LayersIcon from '@mui/icons-material/Layers';
 import { Favorite, Folder, LocationOn, Restore } from '@mui/icons-material';
+import { Dialog } from '@material-ui/core';
 
 
 
@@ -17,6 +18,16 @@ function App() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  }
+
+  const handleClose = () => {
+    setOpen(false);
+  }
 
   return (
     <>
@@ -36,18 +47,49 @@ function App() {
               <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 News
               </Typography>
-              <Button
-                variant="outlined"
-                color="inherit"
-                sx={{
-                  '&:hover': {
-                    borderColor: 'red',
-                  },
-                }}
-              >
-                Login
-              </Button>
+              <Box>
+                <Button
+                  variant="outlined"
+                  color="inherit"
+                  onClick={handleClickOpen}
+                  sx={{
+                    '&:hover': {
+                      borderColor: 'red',
+                    },
+                  }}
+                >
+                  Log in
+                </Button>
+                <Dialog open={open} onClose={handleClose}
+                  aria-labelledby='form-dialog-title'>
+                  <DialogTitle id='form-dialog-title'>log in</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>log in to see videos</DialogContentText>
 
+                    <TextField  //создаем input
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Email Adress"
+                      type="email"
+                      fullWidth
+                    />
+
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="pass"
+                      label="Password"
+                      type="Password"
+                      fullWidth
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleClose} color="primary">Cancel</Button>
+                    <Button onClick={handleClose} color="primary">log in</Button>
+                  </DialogActions>
+                </Dialog>
+              </Box>
               <Button color="inherit" sx={{ bgcolor: 'red', marginLeft: 2 }} > SIGN UP</Button>
             </Toolbar>
           </AppBar>

@@ -5,7 +5,7 @@ import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleFilledWhite
 import LayersIcon from '@mui/icons-material/Layers';
 import { Favorite, Folder, LocationOn, Restore } from '@mui/icons-material';
 import { Dialog } from '@material-ui/core';
-
+import * as Yup from 'yup';
 
 
 
@@ -14,12 +14,25 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 function App() {
   const [value, setValue] = React.useState("recents")
+  const [open, setOpen] = React.useState(false);
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [emailError, setEmailError] = React.useState(false);
+  const [passwordError, setPasswordError] = React.useState(false);
+
+
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email('Invalid email format')
+      .required('Email is required')
+      .matches(/@/, 'Email must contain the @ symbol'), // Добавляем проверку на наличие символа '@'
+    password: Yup.string()
+      .required('Password is required'),
+  });
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-  const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -28,6 +41,24 @@ function App() {
   const handleClose = () => {
     setOpen(false);
   }
+
+  const handleLogin = () => {
+    // логика входа 
+    validationSchema.validate({ email, password }) // Используем Yup для валидации
+      .then(() => {
+        // Вход выполнен успешно
+        // Закрываем диалоговое окно
+        handleClose();
+      })
+      .catch((error) => {
+        // Обработка ошибок валидации
+        if (error.path === 'email') {
+          setEmailError(true);
+        } else if (error.path === 'password') {
+          setPasswordError(true);
+        }
+      });
+  };
 
   return (
     <>
@@ -66,13 +97,17 @@ function App() {
                   <DialogContent>
                     <DialogContentText>log in to see videos</DialogContentText>
 
-                    <TextField  //создаем input
+                    <TextField //создаем input
                       autoFocus
                       margin="dense"
                       id="name"
-                      label="Email Adress"
+                      label="Email Address"
                       type="email"
                       fullWidth
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      error={emailError}
+                      helperText={emailError ? 'Invalid email address' : ''}
                     />
 
                     <TextField
@@ -82,10 +117,15 @@ function App() {
                       label="Password"
                       type="Password"
                       fullWidth
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      error={passwordError}
+                      helperText={passwordError ? 'Password is required' : ''}
                     />
+
                   </DialogContent>
                   <DialogActions>
-                    <Button onClick={handleClose} color="primary">Cancel</Button>
+                    <Button onClick={handleLogin} color="primary">Cancel</Button>
                     <Button onClick={handleClose} color="primary">log in</Button>
                   </DialogActions>
                 </Dialog>
